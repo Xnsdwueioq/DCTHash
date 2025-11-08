@@ -35,7 +35,7 @@ struct WelcomeView: View {
           }
         }
         HStack(alignment: .center, spacing: 20) {
-          Image(systemName: "qrcode")
+          Image(systemName: "barcode")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 40, height: 40)
