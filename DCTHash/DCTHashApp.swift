@@ -9,9 +9,20 @@ import SwiftUI
 
 @main
 struct DCTHashApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+  @State var appStateManager = AppStateManager()
+
+  var body: some Scene {
+    WindowGroup {
+      if appStateManager.hasLaunchedBefore {
+        ContentView()
+      } else {
+        WelcomeView(appStateManager: appStateManager)
+      }
     }
+  }
+}
+
+
+#Preview {
+  ContentView()
 }
