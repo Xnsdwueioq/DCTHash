@@ -15,8 +15,10 @@ struct DCTHashApp: App {
     WindowGroup {
       if appStateManager.hasLaunchedBefore {
         ContentView()
+          .environment(appStateManager)
       } else {
-        WelcomeView(appStateManager: appStateManager)
+        WelcomeView()
+          .environment(appStateManager)
       }
     }
   }
@@ -25,4 +27,5 @@ struct DCTHashApp: App {
 
 #Preview {
   ContentView()
+    .environment(AppStateManager())
 }

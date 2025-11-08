@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WelcomeView: View {
-  var appStateManager: AppStateManager
+  @Environment(AppStateManager.self) var appStateManager: AppStateManager
   
   var body: some View {
     VStack(alignment: .leading) {
@@ -76,5 +76,6 @@ struct WelcomeView: View {
 }
 
 #Preview {
-  WelcomeView(appStateManager: AppStateManager())
+  WelcomeView()
+    .environment(AppStateManager())
 }

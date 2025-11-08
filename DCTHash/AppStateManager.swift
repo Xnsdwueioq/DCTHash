@@ -9,6 +9,8 @@ import SwiftUI
 
 @Observable
 class AppStateManager {
+  let appVersion = "1.1"
+  let appDate = "2025.11"
   private let hasLaunchedBeforeKey = "hasLaunchedBeforeKey"
   
   var hasLaunchedBefore: Bool

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-  @State var selectedView: TabViews = .scanner
+  @State var selectedView: TabViews = .storage
   
   var body: some View {
     TabView(selection: $selectedView, content: {
@@ -18,8 +18,8 @@ struct ContentView: View {
       Tab("Склад", systemImage: "internaldrive", value: .storage, content: {
         Text("\(selectedView.rawValue)")
       })
-      Tab("Настройки", systemImage: "gear", value: .scanner, content: {
-        Text("\(selectedView.rawValue)")
+      Tab("Настройки", systemImage: "gear", value: .settings, content: {
+        SettingsView()
       })
     })
   }
@@ -27,4 +27,5 @@ struct ContentView: View {
 
 #Preview {
   ContentView()
+    .environment(AppStateManager())
 }
