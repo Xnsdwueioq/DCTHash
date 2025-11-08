@@ -13,7 +13,7 @@ struct ContentView: View {
   var body: some View {
     TabView(selection: $selectedView, content: {
       Tab("Сканер", systemImage: "barcode", value: .scanner, content: {
-        Text("\(selectedView.rawValue)")
+        ScannerView()
       })
       Tab("Склад", systemImage: "internaldrive", value: .storage, content: {
         Text("\(selectedView.rawValue)")

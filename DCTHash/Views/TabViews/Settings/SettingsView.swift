@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-enum AppTheme: String, CaseIterable {
-  case light = "Светлая"
-  case dark = "Темная"
-  case system = "Системная"
-}
-
 struct SettingsView: View {
   @Environment(AppStateManager.self) var appStateManager: AppStateManager
   @State var selectedAppTheme: AppTheme = .system
@@ -24,7 +18,7 @@ struct SettingsView: View {
           Picker(selection: $selectedAppTheme, content: {
             ForEach(AppTheme.allCases, id: \.self) { theme in
               Text(theme.rawValue)
-              //TODO
+              //TODO (менять тему приложения)
             }
           }, label: { })
           .pickerStyle(.palette)
@@ -33,20 +27,20 @@ struct SettingsView: View {
         })
         Section(content: {
           Button("Переименовать склад") {
-            //TODO
+            //TODO (действие переименовать склад)
           }
           Button("Очистить все данные") {
-            //TODO
+            //TODO (очистить все данные)
           }
         })
         Section(content: {
           NavigationLink(destination: {
-            //TODO
+            //TODO (новое окно справки)
           }, label: {
             Text("Справка")
           })
           NavigationLink(destination: {
-            //TODO
+            //TODO (новое окно для отправки отзыва)
           }, label: {
             Text("Отправить отзыв")
           })
