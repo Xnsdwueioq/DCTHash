@@ -9,14 +9,16 @@ import SwiftUI
 
 struct ScannerView: View {
   @State private var scanMode: ScanMode = .add
+  @State var scannedBarcode: String = "Ожидание сканирования"
+  @State var barcodes: [String] = []
   
   var body: some View {
     NavigationStack {
       VStack {
         VStack(spacing: 20) {
-          //TODO (заменить на камеру для сканирования)
-          RoundedRectangle(cornerRadius: 25)
-            .frame(width: 350, height: 150)
+          BarcodeScannerView(scannedBarcode: $scannedBarcode)
+            .clipShape(RoundedRectangle(cornerRadius: 25))
+            .frame(width: 350, height: 180)
           Picker(selection: $scanMode, content: {
             ForEach(ScanMode.allCases, id: \.self) { mode in
               Text(mode.rawValue)
@@ -24,12 +26,14 @@ struct ScannerView: View {
           }, label: { })
           .pickerStyle(.palette)
           .padding(.horizontal, 30)
+          Label(scannedBarcode, systemImage: "barcode")
         }
         .padding(.vertical, 40)
-        //TODO? (добавить историю сканирования в рамках сенса)
+        
+        //TODO? (добавить разбивку штрихкода)
         Spacer()
         Button(action: {
-          //TODO (отсканировать штрихкод)
+          //TODO (сохранить товар)
         }, label: {
           ZStack {
             Image(systemName: "barcode.viewfinder")

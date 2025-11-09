@@ -16,7 +16,7 @@ struct ContentView: View {
         ScannerView()
       })
       Tab("Склад", systemImage: "internaldrive", value: .storage, content: {
-        Text("\(selectedView.rawValue)")
+        StorageView()
       })
       Tab("Настройки", systemImage: "gear", value: .settings, content: {
         SettingsView()
