@@ -38,7 +38,7 @@ struct StorageRenameView: View {
     }
     .alert("Очистить все данные", isPresented: $isDeleteAllVisible, actions: {
       Button("Удалить", role: .destructive) {
-        storage.productTable = [:]
+        storage.deleteData()
         isDeleteAllVisible.toggle()
       }
       Button("Отмена", role: .cancel) {

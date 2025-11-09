@@ -31,4 +31,5 @@ struct DCTHashApp: App {
 #Preview {
   ContentView()
     .environment(AppStateManager())
+    .environment(ProductStorage())
 }

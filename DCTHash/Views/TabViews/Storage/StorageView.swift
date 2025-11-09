@@ -17,26 +17,40 @@ struct StorageView: View {
   var body: some View {
     NavigationStack {
       List {
-        ForEach(Array(storage.productTable), id:\.key) { key, items in
-          NavigationLink(key, destination: {
-            List {
-              ForEach(items) { item in
-                NavigationLink(destination: {
-                  BarcodeGeneratorView(product: item)
-                }) {
-                  Stepper(value: Binding(get: {
-                    item.amount
-                  }, set: { newAmount in
-                    storage.stepperSet(category: key, productName: item.name, newAmount: newAmount)
-                  }), in: 1...Int.max, label: {
-                    Text(item.name)
-                    Text(String(item.amount))
+        if !storage.productTable.isEmpty {
+          ForEach(Array(storage.productTable), id:\.key) { key, items in
+            NavigationLink(key, destination: {
+              List {
+                if !(storage.productTable[key] ?? []).isEmpty {
+                  // Карточки товаров
+                  ForEach(items) { item in
+                    NavigationLink(destination: {
+                      BarcodeGeneratorView(product: item)
+                    }) {
+                      Stepper(value: Binding(get: {
+                        item.amount
+                      }, set: { newAmount in
+                        storage.stepperSet(category: key, productName: item.name, newAmount: newAmount)
+                      }), in: 1...Int.max, label: {
+                        Text(item.name)
+                        Text(String(item.amount))
+                      })
+                    }
+                  }
+                  .onDelete(perform: { offset in
+                    storage.productTable[key]?.remove(atOffsets: offset)
                   })
+                } else {
+                  Text("Нет данных")
+                    .foregroundStyle(.gray)
                 }
               }
-            }
-            .navigationTitle(key)
-          })
+              .navigationTitle(key)
+            })
+          }
+        } else {
+          Text("Нет данных")
+            .foregroundStyle(.gray)
         }
       }
       .navigationTitle(storageName)
@@ -47,12 +61,5 @@ struct StorageView: View {
 #Preview {
   StorageView()
     .environment(AppStateManager())
-    .environment(ProductStorage(barcodes: [
-      "some1$101",
-      "some2$102",
-      "some3$103",
-      "some4$104",
-      "some5$105",
-      "some6$106",
-    ]))
+    .environment(ProductStorage())
 }

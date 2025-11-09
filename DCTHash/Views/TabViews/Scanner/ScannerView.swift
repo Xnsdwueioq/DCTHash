@@ -56,7 +56,7 @@ struct ScannerView: View {
           case .add:
             storage.addProducts(productsBarcodes: barcodes)
           case .delete:
-            storage.addProducts(productsBarcodes: barcodes) //TODO (функция удаления)
+            storage.deleteProducts(productsBarcodes: barcodes)
           }
           barcodes.removeAll()
         }, label: {

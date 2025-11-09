@@ -57,14 +57,25 @@ struct Product: Identifiable, Hashable, Codable {
 @Observable
 class ProductStorage {
   var storageName: String = "Склад"
-  var productTable: [String : [Product]] = [:]
+  var productTable: [String : [Product]] = [
+    "Техника":[],
+    "Мебель":[],
+    "Медицина":[],
+    "Металлы":[],
+    "Хим элементы":[],
+    "Бумажные изделия":[]
+  ]
   
   init(barcodes: [String]) {
     addProducts(productsBarcodes: barcodes)
   }
-  init() {
-  }
+  init() { }
   
+  func deleteData() {
+    for key in productTable.keys {
+      productTable[key] = []
+    }
+  }
   func stepperSet(category: String, productName: String, newAmount: Int) {
     if var products = productTable[category] {
       if let index = products.firstIndex(where: {$0.name == productName}) {
@@ -93,6 +104,31 @@ class ProductStorage {
         categoryProducts.append(newProduct)
       }
       productTable[productCategory] = categoryProducts
+    }
+  }
+  func deleteProducts(productsBarcodes: [String]) {
+    for barcode in productsBarcodes {
+      guard let deleteProduct = Product(barcode: barcode) else {
+        print("Ошибка парсинга штрихкода: \(barcode) - пропуск")
+        continue
+      }
+      
+      let productName = deleteProduct.name
+      let productCategory = deleteProduct.category
+      let productAmount = deleteProduct.amount
+      
+      var categoryProducts = productTable[productCategory, default: []]
+      if let index = categoryProducts.firstIndex(where: {
+        $0.name == productName
+      }) {
+        if categoryProducts[index].amount > productAmount {
+          categoryProducts[index].amount -= productAmount
+          productTable[productCategory] = categoryProducts
+        } else {
+          categoryProducts.remove(at: index)
+          productTable[productCategory] = categoryProducts
+        }
+      }
     }
   }
 }
