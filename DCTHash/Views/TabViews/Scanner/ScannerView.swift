@@ -9,14 +9,33 @@ import SwiftUI
 
 struct ScannerView: View {
   @State private var scanMode: ScanMode = .add
-  @State var scannedBarcode: String = "Ожидание сканирования"
-  @State var barcodes: [String] = []
+  @State var barcodes: [String] = [
+    "barcode",
+    "barocode2",
+    "barcode",
+    "barocode2",
+    "barcodedsfkimsmfdoaimdfoadfofas",
+    "barocode2",
+    "barcode",
+    "barocode2"
+  ]
+  @Binding var selectedTab: TabViews
+  private var isScannerActive: Bool {
+    selectedTab == .scanner
+  }
+  private var buttonColor: Color {
+    if barcodes.isEmpty {
+      Color.gray
+    } else {
+      scanMode == .add ? .green : .red
+    }
+  }
   
   var body: some View {
     NavigationStack {
       VStack {
         VStack(spacing: 20) {
-          BarcodeScannerView(scannedBarcode: $scannedBarcode)
+          BarcodeScannerView(scannedBarcodes: $barcodes, isScanningActive: .constant(isScannerActive))
             .clipShape(RoundedRectangle(cornerRadius: 25))
             .frame(width: 350, height: 180)
           Picker(selection: $scanMode, content: {
@@ -26,27 +45,37 @@ struct ScannerView: View {
           }, label: { })
           .pickerStyle(.palette)
           .padding(.horizontal, 30)
-          Label(scannedBarcode, systemImage: "barcode")
+          ScrollView {
+            VStack(alignment: .leading, spacing: 5) {
+              ForEach(barcodes.reversed(), id:\.self) { barcode in
+                HStack(alignment:.center, spacing:10, content: {
+                  Image(systemName: "barcode")
+                  Text(barcode)
+                }).padding(.horizontal, 50)
+              }
+            }
+          }
+          .scrollIndicators(.never)
         }
-        .padding(.vertical, 40)
-        
-        //TODO? (добавить разбивку штрихкода)
-        Spacer()
+        .padding(.top, 40)
+        .padding(.bottom, 20)
         Button(action: {
-          //TODO (сохранить товар)
+          //TODO (сохранение данных в хранилище)
+          barcodes.removeAll()
         }, label: {
           ZStack {
             Image(systemName: "barcode.viewfinder")
               .resizable()
               .aspectRatio(contentMode: .fit)
               .scaleEffect(0.6)
-              .foregroundStyle(scanMode == ScanMode.add ? .green : .red)
+              .foregroundStyle(buttonColor)
               .animation(.easeInOut, value: scanMode)
           }
           .frame(width: 120, height: 80)
         })
+        .disabled(barcodes.isEmpty)
         .buttonStyle(.glass)
-        .padding(.vertical, 40)
+        .padding(.bottom, 40)
       }
       .navigationTitle("Сканирование")
     }
@@ -54,5 +83,6 @@ struct ScannerView: View {
 }
 
 #Preview {
-  ScannerView()
+  ContentView(selectedView: .scanner)
+    .environment(AppStateManager())
 }

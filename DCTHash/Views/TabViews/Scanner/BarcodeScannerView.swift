@@ -1,69 +1,64 @@
-//
-//  BarcodeScannerView.swift
-//  DCTHash
-//
-//  Created by Eyhciurmrn Zmpodackrl on 09.11.2025.
-//
-
 import SwiftUI
 import VisionKit
 
 // Обертка для DataScannerViewController
 struct BarcodeScannerView: UIViewControllerRepresentable {
-  // Состояние для хранения результата сканирования
-  @Binding var scannedBarcode: String
-  
-  // Типы данных для сканирования
-  let recognizedDataTypes: Set<DataScannerViewController.RecognizedDataType> = [.barcode()]
-  
-  func makeUIViewController(context: Context) -> DataScannerViewController {
-    // Создание контроллера сканера
-    let scannerViewController = DataScannerViewController(
-      recognizedDataTypes: recognizedDataTypes,
-      qualityLevel: .fast,
-      recognizesMultipleItems: false,
-      isHighlightingEnabled: true
-    )
+    // ... (Остальные привязки)
+    @Binding var scannedBarcodes: [String] // Предполагая, что вы используете массив из предыдущего ответа
     
-    // Установка координатора как делегата для обработки событий сканирования
-    scannerViewController.delegate = context.coordinator
+    // НОВАЯ ПРИВЯЗКА: Управляет состоянием активности сканера
+    @Binding var isScanningActive: Bool
     
-    // Запуск сканирования
-    try? scannerViewController.startScanning()
+    let recognizedDataTypes: Set<DataScannerViewController.RecognizedDataType> = [.barcode()]
     
-    return scannerViewController
-  }
-  
-  func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
-    // Обновление контроллера при изменении состояния SwiftUI
-  }
-  
-  // Создание Координатора
-  func makeCoordinator() -> Coordinator {
-    Coordinator(scannedBarcode: $scannedBarcode)
-  }
-  
-  class Coordinator: NSObject, DataScannerViewControllerDelegate {
-    @Binding var scannedBarcode: String
-    
-    init(scannedBarcode: Binding<String>) {
-      _scannedBarcode = scannedBarcode
+    func makeUIViewController(context: Context) -> DataScannerViewController {
+        let scannerViewController = DataScannerViewController(
+            recognizedDataTypes: recognizedDataTypes,
+            qualityLevel: .fast,
+            recognizesMultipleItems: false,
+            isHighlightingEnabled: true
+        )
+        
+        scannerViewController.delegate = context.coordinator
+        
+        // В makeUIViewController НЕ ЗАПУСКАЕМ сканирование
+        // Его запустит updateUIViewController
+        
+        return scannerViewController
     }
     
-    // Обработка найденных объектов
-    func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-      switch item {
-      case .barcode(let barcode):
-        // Если найден штрих-код, обновляем связанную переменную
-        if let payload = barcode.payloadStringValue {
-          scannedBarcode = payload
-          // Остановка сканирования после успешного считывания (опционально)
-          // dataScanner.stopScanning()
+    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {
+        // КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Управляем состоянием сканирования
+        if isScanningActive {
+            // Пытаемся запустить сканирование, если оно активно
+            try? uiViewController.startScanning()
+        } else {
+            // Останавливаем сканирование, когда вкладка не активна
+            uiViewController.stopScanning()
         }
-      default:
-        // Игнорируем другие типы найденных объектов
-        break
-      }
     }
-  }
+    
+    // Создание Координатора
+    func makeCoordinator() -> Coordinator {
+        Coordinator(scannedBarcodes: $scannedBarcodes)
+    }
+    
+    class Coordinator: NSObject, DataScannerViewControllerDelegate {
+        @Binding var scannedBarcodes: [String]
+        
+        init(scannedBarcodes: Binding<[String]>) {
+            _scannedBarcodes = scannedBarcodes
+        }
+        
+        func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
+            switch item {
+            case .barcode(let barcode):
+                if let payload = barcode.payloadStringValue {
+                    scannedBarcodes.append(payload)
+                }
+            default:
+                break
+            }
+        }
+    }
 }
