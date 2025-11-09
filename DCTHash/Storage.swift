@@ -56,6 +56,7 @@ struct Product: Identifiable, Hashable, Codable {
 
 @Observable
 class ProductStorage {
+  private let storageNameKey = "storageNameKey"
   var storageName: String = "Склад"
   var productTable: [String : [Product]] = [
     "Техника":[],
@@ -69,8 +70,14 @@ class ProductStorage {
   init(barcodes: [String]) {
     addProducts(productsBarcodes: barcodes)
   }
-  init() { }
+  init() {
+    storageName = UserDefaults.standard.string(forKey: storageNameKey) ?? "Склад"
+  }
   
+  func changeStorageName(_ newName: String) {
+    storageName = newName
+    UserDefaults.standard.set(newName, forKey: storageNameKey)
+  }
   func deleteData() {
     for key in productTable.keys {
       productTable[key] = []
