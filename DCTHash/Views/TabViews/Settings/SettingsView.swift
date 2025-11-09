@@ -51,7 +51,7 @@ struct SettingsView: View {
             Text("Отправить отзыв")
           })
         }, footer: {
-          Text("ver \(appStateManager.appVersion) \(appStateManager.appDate)")
+          Text("DCTHash ver \(appStateManager.appVersion) \(appStateManager.appDate)")
         })
       }
       .navigationTitle("Настройки")

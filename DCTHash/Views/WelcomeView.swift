@@ -15,7 +15,7 @@ struct WelcomeView: View {
       Group {
         Text("Добро пожаловать")
           .font(.system(size: 30))
-        Text("в TCDHash")
+        Text("в DCTHash")
           .foregroundStyle(.accent)
           .font(.system(size: 40))
       }
