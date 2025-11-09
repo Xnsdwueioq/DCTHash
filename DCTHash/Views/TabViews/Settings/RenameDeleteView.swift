@@ -21,7 +21,7 @@ struct StorageRenameView: View {
       TextField("Название", text: $newName)
       Button("ОК") {
         if !newName.isEmpty {
-          storage.changeStorageName()
+          storage.changeStorageName(newName)
           newName = ""
         }
       }
