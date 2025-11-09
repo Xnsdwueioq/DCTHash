@@ -10,12 +10,14 @@ import SwiftUI
 @main
 struct DCTHashApp: App {
   @State var appStateManager = AppStateManager()
+  @State var storage = ProductStorage()
 
   var body: some Scene {
     WindowGroup {
       if appStateManager.hasLaunchedBefore {
         ContentView()
           .environment(appStateManager)
+          .environment(storage)
       } else {
         WelcomeView()
           .environment(appStateManager)

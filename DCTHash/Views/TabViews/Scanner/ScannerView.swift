@@ -8,17 +8,9 @@
 import SwiftUI
 
 struct ScannerView: View {
+  @Environment(ProductStorage.self) var storage: ProductStorage
   @State private var scanMode: ScanMode = .add
-  @State var barcodes: [String] = [
-    "barcode",
-    "barocode2",
-    "barcode",
-    "barocode2",
-    "barcodedsfkimsmfdoaimdfoadfofas",
-    "barocode2",
-    "barcode",
-    "barocode2"
-  ]
+  @State var barcodes: [String] = []
   @Binding var selectedTab: TabViews
   private var isScannerActive: Bool {
     selectedTab == .scanner
@@ -60,7 +52,7 @@ struct ScannerView: View {
         .padding(.top, 40)
         .padding(.bottom, 20)
         Button(action: {
-          //TODO (сохранение данных в хранилище)
+          storage.addProducts(productsBarcodes: barcodes)
           barcodes.removeAll()
         }, label: {
           ZStack {
@@ -85,4 +77,5 @@ struct ScannerView: View {
 #Preview {
   ContentView(selectedView: .scanner)
     .environment(AppStateManager())
+    .environment(ProductStorage())
 }

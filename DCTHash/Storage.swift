@@ -7,19 +7,77 @@
 
 import SwiftUI
 
-struct Product: Identifiable, Codable {
-  var name: String
-  let barcode: String
-  var quantity: Int
-  
-//  var id: String = { barcode }
+struct Product: Identifiable, Hashable, Codable {
   var id: UUID = UUID()
+  let name: String
+  var amount: Int
+  let category: String
   
-  init(name: String, barcode: String, quantity: Int = 0) {
+  private static let categoryMap: [String: String] = [
+    "1": "Техника",
+    "2": "Мебель",
+    "3": "Медицина",
+    "4": "Металлы",
+    "5": "Хим элементы",
+    "6": "Бумажные изделия"
+  ]
+  
+  init?(barcode: String) {
+    let components = barcode.split(separator: "$")
+    guard components.count == 2 else {
+      return nil
+    }
+    
+    let parsedName = String(components[0])
+    let dataPart = components[1]
+    
+    guard let categoryCode = dataPart.last.map({String($0)}),
+          let parsedCategory = Product.categoryMap[categoryCode] else {
+      return nil
+    }
+    
+    let amountSubstring = dataPart.dropLast()
+    
+    guard let parsedAmount = Int(String(amountSubstring)) else {
+      return nil
+    }
+    
+    self.name = parsedName
+    self.amount = parsedAmount
+    self.category = parsedCategory
+  }
+  
+  init(name: String, amount: Int, category: String) {
     self.name = name
-    self.barcode = barcode
-    self.quantity = quantity
+    self.amount = amount
+    self.category = category
   }
 }
-class Storage {
+
+@Observable
+class ProductStorage {
+  var productTable: [String : [Product]] = [:]
+  
+  func addProducts(productsBarcodes: [String]) {
+    for barcode in productsBarcodes {
+      guard let newProduct = Product(barcode: barcode) else {
+        print("Ошибка парсинга штрихкода: \(barcode) - пропуск")
+        continue
+      }
+      
+      let productName = newProduct.name
+      let productCategory = newProduct.category
+      let productAmount = newProduct.amount
+      
+      var categoryProducts = productTable[productCategory, default: []]
+      if let index = categoryProducts.firstIndex(where: {
+        $0.name == productName
+      }) {
+        categoryProducts[index].amount += productAmount
+      } else {
+        categoryProducts.append(newProduct)
+      }
+      productTable[productCategory] = categoryProducts
+    }
+  }
 }
