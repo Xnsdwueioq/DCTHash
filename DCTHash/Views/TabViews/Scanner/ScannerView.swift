@@ -52,7 +52,12 @@ struct ScannerView: View {
         .padding(.top, 40)
         .padding(.bottom, 20)
         Button(action: {
-          storage.addProducts(productsBarcodes: barcodes)
+          switch scanMode {
+          case .add:
+            storage.addProducts(productsBarcodes: barcodes)
+          case .delete:
+            storage.addProducts(productsBarcodes: barcodes) //TODO (функция удаления)
+          }
           barcodes.removeAll()
         }, label: {
           ZStack {

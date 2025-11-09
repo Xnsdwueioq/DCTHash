@@ -18,6 +18,7 @@ struct DCTHashApp: App {
         ContentView()
           .environment(appStateManager)
           .environment(storage)
+          .preferredColorScheme(appStateManager.colorTheme.colorScheme)
       } else {
         WelcomeView()
           .environment(appStateManager)

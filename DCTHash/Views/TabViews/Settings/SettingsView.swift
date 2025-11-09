@@ -11,36 +11,42 @@ struct SettingsView: View {
   @Environment(AppStateManager.self) var appStateManager: AppStateManager
   @State var selectedAppTheme: AppTheme = .system
   
+  
   var body: some View {
     NavigationStack {
       List {
+        // Тема
         Section(content: {
           Picker(selection: $selectedAppTheme, content: {
             ForEach(AppTheme.allCases, id: \.self) { theme in
               Text(theme.rawValue)
-              //TODO (менять тему приложения)
             }
           }, label: { })
           .pickerStyle(.palette)
+          .onChange(of: selectedAppTheme, {
+            appStateManager.changeTheme(newTheme: selectedAppTheme)
+          })
         }, header: {
           Text("Тема")
         })
+        .onAppear {
+          selectedAppTheme = appStateManager.colorTheme
+        }
+        
+        // Переименовать и очистить
         Section(content: {
-          Button("Переименовать склад") {
-            //TODO (действие переименовать склад)
-          }
-          Button("Очистить все данные") {
-            //TODO (очистить все данные)
-          }
+          StorageRenameView()
         })
+        
+        // Справка и отзыв
         Section(content: {
           NavigationLink(destination: {
-            //TODO (новое окно справки)
+            HelpView()
           }, label: {
             Text("Справка")
           })
           NavigationLink(destination: {
-            //TODO (новое окно для отправки отзыва)
+            SendFeedbackView()
           }, label: {
             Text("Отправить отзыв")
           })
@@ -54,6 +60,7 @@ struct SettingsView: View {
 }
 
 #Preview {
-  SettingsView()
+  ContentView()
     .environment(AppStateManager())
+    .environment(ProductStorage())
 }

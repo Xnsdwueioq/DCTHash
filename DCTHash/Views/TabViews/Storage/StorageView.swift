@@ -9,8 +9,10 @@ import SwiftUI
 
 struct StorageView: View {
   @Environment(ProductStorage.self) var storage: ProductStorage
+  var storageName: String {
+    storage.storageName
+  }
   
-  @State var storageName: String = "Склад"
   
   var body: some View {
     NavigationStack {
@@ -19,7 +21,18 @@ struct StorageView: View {
           NavigationLink(key, destination: {
             List {
               ForEach(items) { item in
-                Text(item.name)
+                NavigationLink(destination: {
+                  BarcodeGeneratorView(product: item)
+                }) {
+                  Stepper(value: Binding(get: {
+                    item.amount
+                  }, set: { newAmount in
+                    storage.stepperSet(category: key, productName: item.name, newAmount: newAmount)
+                  }), in: 1...Int.max, label: {
+                    Text(item.name)
+                    Text(String(item.amount))
+                  })
+                }
               }
             }
             .navigationTitle(key)
@@ -34,5 +47,12 @@ struct StorageView: View {
 #Preview {
   StorageView()
     .environment(AppStateManager())
-    .environment(ProductStorage())
+    .environment(ProductStorage(barcodes: [
+      "some1$101",
+      "some2$102",
+      "some3$103",
+      "some4$104",
+      "some5$105",
+      "some6$106",
+    ]))
 }

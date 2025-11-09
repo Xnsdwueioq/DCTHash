@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+  @Environment(AppStateManager.self) var appStateManager: AppStateManager
   @State var selectedView: TabViews = .storage
   
   var body: some View {

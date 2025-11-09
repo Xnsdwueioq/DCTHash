@@ -56,8 +56,23 @@ struct Product: Identifiable, Hashable, Codable {
 
 @Observable
 class ProductStorage {
+  var storageName: String = "Склад"
   var productTable: [String : [Product]] = [:]
   
+  init(barcodes: [String]) {
+    addProducts(productsBarcodes: barcodes)
+  }
+  init() {
+  }
+  
+  func stepperSet(category: String, productName: String, newAmount: Int) {
+    if var products = productTable[category] {
+      if let index = products.firstIndex(where: {$0.name == productName}) {
+        products[index].amount = newAmount
+        productTable[category] = products
+      }
+    }
+  }
   func addProducts(productsBarcodes: [String]) {
     for barcode in productsBarcodes {
       guard let newProduct = Product(barcode: barcode) else {
