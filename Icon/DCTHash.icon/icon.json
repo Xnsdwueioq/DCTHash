@@ -33,10 +33,10 @@
       "name" : "Group",
       "opacity" : 1,
       "position" : {
-        "scale" : 3.55,
+        "scale" : 1.55,
         "translation-in-points" : [
-          382.9765625,
-          -1084.8125
+          388.3046875,
+          -761.109375
         ]
       },
       "shadow" : {
@@ -47,6 +47,39 @@
       "translucency" : {
         "enabled" : true,
         "value" : 0.6
+      }
+    },
+    {
+      "blend-mode" : "darken",
+      "blur-material" : 0.46,
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "solid" : "display-p3:0.59009,0.15569,0.24361,1.00000"
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "IMAGE 2025-11-10 21:35:11.jpg",
+          "name" : "IMAGE 2025-11-10 21:35:11",
+          "opacity" : 1,
+          "position" : {
+            "scale" : 30,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "opacity" : 0.4,
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 1
       }
     }
   ],
