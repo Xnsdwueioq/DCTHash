@@ -78,11 +78,6 @@ class ProductStorage {
     storageName = newName
     UserDefaults.standard.set(newName, forKey: storageNameKey)
   }
-  func deleteData() {
-    for key in productTable.keys {
-      productTable[key] = []
-    }
-  }
   func stepperSet(category: String, productName: String, newAmount: Int) {
     if var products = productTable[category] {
       if let index = products.firstIndex(where: {$0.name == productName}) {
@@ -91,6 +86,7 @@ class ProductStorage {
       }
     }
   }
+  
   func addProducts(productsBarcodes: [String]) {
     for barcode in productsBarcodes {
       guard let newProduct = Product(barcode: barcode) else {
@@ -136,6 +132,11 @@ class ProductStorage {
           productTable[productCategory] = categoryProducts
         }
       }
+    }
+  }
+  func deleteAllProducts() {
+    for key in productTable.keys {
+      productTable[key] = []
     }
   }
 }
