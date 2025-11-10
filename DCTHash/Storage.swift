@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import UIKit
+import UniformTypeIdentifiers
 
 struct Product: Identifiable, Hashable, Codable {
   var id: UUID = UUID()
@@ -139,4 +141,82 @@ class ProductStorage {
       productTable[key] = []
     }
   }
+  
+  func getJSONData() throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = .prettyPrinted
+    return try encoder.encode(self.productTable)
+  }
+}
+
+let jsonUTType = UTType(filenameExtension: "json", conformingTo: .data)!
+
+struct DocumentExporter: UIViewControllerRepresentable {
+    // Данные, которые мы хотим сохранить (в формате Data)
+    let data: Data
+    let filename: String
+    
+    @Binding var isPresented: Bool
+    var completion: (Bool) -> Void // Callback для обработки результата
+    
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = UIViewController()
+        
+        // Запускаем экспорт, как только View появляется
+        DispatchQueue.main.async {
+            self.exportDocument(from: controller, context: context)
+        }
+        return controller
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+    
+    private func exportDocument(from parent: UIViewController, context: Context) {
+        // Сохраняем данные во временный файл
+        guard let tempURL = writeToTemporaryFile() else {
+            completion(false)
+            return
+        }
+        
+        // Создаем контроллер для экспорта
+        // Используем UIActivityViewController, который предлагает "Сохранить в Файлы"
+        let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
+        
+        // Устанавливаем делегат для обработки закрытия
+        activityVC.completionWithItemsHandler = { activityType, completed, returnedItems, error in
+            // Удаляем временный файл
+            try? FileManager.default.removeItem(at: tempURL)
+            
+            // Сообщаем родительскому представлению, что диалог закрыт
+            self.isPresented = false
+            self.completion(completed)
+        }
+        
+        // Представляем контроллер
+        parent.present(activityVC, animated: true, completion: nil)
+    }
+    
+    private func writeToTemporaryFile() -> URL? {
+        do {
+            let tempDir = FileManager.default.temporaryDirectory
+            let tempURL = tempDir.appendingPathComponent(filename)
+            try data.write(to: tempURL)
+            return tempURL
+        } catch {
+            print("Ошибка записи во временный файл: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    class Coordinator: NSObject {
+        var parent: DocumentExporter
+        
+        init(parent: DocumentExporter) {
+            self.parent = parent
+        }
+    }
 }

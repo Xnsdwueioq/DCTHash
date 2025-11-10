@@ -10,9 +10,22 @@
 		B798DD3E2EC1372200866F9E /* DCTHash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTHash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B7119AFC2EC1E6C3004962B3 /* Exceptions for "DCTHash" folder in "DCTHash" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Views/TabViews/Storage/Untitled.swift,
+			);
+			target = B78292922EBF50DF00E7837D /* DCTHash */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B78292952EBF50DF00E7837D /* DCTHash */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B7119AFC2EC1E6C3004962B3 /* Exceptions for "DCTHash" folder in "DCTHash" target */,
+			);
 			path = DCTHash;
 			sourceTree = "<group>";
 		};

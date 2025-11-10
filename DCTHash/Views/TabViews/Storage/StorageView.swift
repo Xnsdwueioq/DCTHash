@@ -9,6 +9,8 @@ import SwiftUI
 
 struct StorageView: View {
   @Environment(ProductStorage.self) var storage: ProductStorage
+  @State var showingExporter: Bool = false
+  @State var exportSuccess: Bool?
   var storageName: String {
     storage.storageName
   }
@@ -54,6 +56,33 @@ struct StorageView: View {
         }
       }
       .navigationTitle(storageName)
+      
+      .toolbar(content: {
+        // search
+        ToolbarItem(placement: .automatic, content: {
+          //TODO (реализация поиска)
+          Button(action: {
+          }, label: {
+            Image(systemName: "magnifyingglass")
+              .symbolRenderingMode(.multicolor)
+          })
+        })
+        
+        // save
+        ToolbarItem(placement: .automatic, content: {
+          JSONSaverView(showingExporter: $showingExporter, exportSuccess: $exportSuccess)
+        })
+      })
+    }
+    .fullScreenCover(isPresented: $showingExporter) {
+      // DocumentExporter невидимый, он просто отображает системный диалог
+      DocumentExporter(
+        data: (try? storage.getJSONData()) ?? Data(), // Получаем данные здесь, или пустые в случае ошибки
+        filename: "product_storage_\(Date().timeIntervalSince1970).json",
+        isPresented: $showingExporter
+      ) { completed in
+        self.exportSuccess = completed
+      }
     }
   }
 }
