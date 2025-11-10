@@ -59,7 +59,18 @@ struct HelpView: View {
             .font(.subheadline)
             .foregroundStyle(.gray)
         }
-        //TODO (добавить новые концепци)
+        VStack {
+          Image("searchexport")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 30))
+          Text("Поиск и экспорт")
+            .font(.callout)
+            .foregroundStyle(.gray)
+          Text("11.\tНажмите чтобы выполнить поиск по всем товарам на складе\n12.\tНажмите чтобы выполнить экспорт данных в JSON файл")
+            .font(.subheadline)
+            .foregroundStyle(.gray)
+        }
       }.padding(20)
         .navigationTitle("Справка")
     }.scrollIndicators(.never)
