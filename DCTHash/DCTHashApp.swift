@@ -9,19 +9,28 @@ import SwiftUI
 
 @main
 struct DCTHashApp: App {
+  @State var launchedScreenState = LaunchScreenStateManager()
   @State var appStateManager = AppStateManager()
   @State var storage = ProductStorage()
 
   var body: some Scene {
     WindowGroup {
-      if appStateManager.hasLaunchedBefore {
-        ContentView()
-          .environment(appStateManager)
-          .environment(storage)
-          .preferredColorScheme(appStateManager.colorTheme.colorScheme)
-      } else {
-        WelcomeView()
-          .environment(appStateManager)
+      ZStack {
+        if appStateManager.hasLaunchedBefore {
+          ContentView()
+            .environment(appStateManager)
+            .environment(storage)
+            .preferredColorScheme(appStateManager.colorTheme.colorScheme)
+        } else {
+          WelcomeView()
+            .environment(appStateManager)
+        }
+        
+        if launchedScreenState.isActive {
+          AnimatedLaunchView()
+            .transition(.opacity)
+            .environment(launchedScreenState)
+        }
       }
     }
   }
@@ -32,4 +41,5 @@ struct DCTHashApp: App {
   ContentView()
     .environment(AppStateManager())
     .environment(ProductStorage())
+    .preferredColorScheme(.light)
 }

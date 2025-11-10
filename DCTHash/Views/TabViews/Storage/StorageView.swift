@@ -60,11 +60,11 @@ struct StorageView: View {
       .toolbar(content: {
         // search
         ToolbarItem(placement: .automatic, content: {
-          //TODO (реализация поиска)
-          Button(action: {
+          NavigationLink(destination: {
+            SearchView()
+              .navigationTitle("Поиск")
           }, label: {
             Image(systemName: "magnifyingglass")
-              .symbolRenderingMode(.multicolor)
           })
         })
         

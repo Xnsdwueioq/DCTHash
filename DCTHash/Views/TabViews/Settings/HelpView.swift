@@ -59,6 +59,7 @@ struct HelpView: View {
             .font(.subheadline)
             .foregroundStyle(.gray)
         }
+        //TODO (добавить новые концепци)
       }.padding(20)
         .navigationTitle("Справка")
     }.scrollIndicators(.never)
