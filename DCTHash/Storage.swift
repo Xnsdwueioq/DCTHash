@@ -24,6 +24,12 @@ struct Product: Identifiable, Hashable, Codable {
     "6": "Бумажные изделия"
   ]
   
+  enum CodingKeys: String, CodingKey {
+    case name
+    case amount
+    case category
+  }
+  
   init?(barcode: String) {
     let components = barcode.split(separator: "$")
     guard components.count == 2 else {
@@ -54,6 +60,22 @@ struct Product: Identifiable, Hashable, Codable {
     self.amount = amount
     self.category = category
   }
+
+  init(from decoder: any Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.name = try container.decode(String.self, forKey: .name)
+    self.amount = try container.decode(Int.self, forKey: .amount)
+    self.category = try container.decode(String.self, forKey: .category)
+    self.id = UUID()
+  }
+  
+  func encode(to encoder: any Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(self.name, forKey: .name)
+    try container.encode(self.amount, forKey: .amount)
+    try container.encode(self.category, forKey: .category)
+  }
+  
 }
 
 @Observable
@@ -97,6 +119,22 @@ class ProductStorage {
     } catch {
       print("Ошибка декодирования данных: \(error.localizedDescription)")
     }
+  }
+  func loadProductTable(from data: Data) throws {
+      do {
+          let loadedTable = try JSONDecoder().decode([String : [Product]].self, from: data)
+
+          self.productTable = loadedTable
+          
+          let initialKeys = ["Техника", "Мебель", "Медицина", "Металлы", "Химия", "Бумажные изделия"]
+          for key in initialKeys where productTable[key] == nil {
+              productTable[key] = []
+          }
+          
+          saveProductTable()
+      } catch {
+          throw error
+      }
   }
   private func saveProductTable() {
     do {
@@ -254,4 +292,55 @@ struct DocumentExporter: UIViewControllerRepresentable {
       self.parent = parent
     }
   }
+}
+struct DocumentImporter: UIViewControllerRepresentable {
+    static let readableContentTypes: [UTType] = [jsonUTType]
+
+    @Binding var isPresented: Bool
+    var completion: (Result<Data, Error>) -> Void
+
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: DocumentImporter.readableContentTypes, asCopy: true)
+        picker.allowsMultipleSelection = false
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
+        var parent: DocumentImporter
+
+        init(parent: DocumentImporter) {
+            self.parent = parent
+        }
+
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            parent.isPresented = false
+
+            guard let url = urls.first else {
+                return
+            }
+
+            let success = url.startAccessingSecurityScopedResource()
+            do {
+                let data = try Data(contentsOf: url)
+                parent.completion(.success(data))
+            } catch {
+                parent.completion(.failure(error))
+            }
+
+            if success {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+            parent.isPresented = false
+        }
+    }
 }

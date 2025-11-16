@@ -26,7 +26,7 @@ struct JSONSaverView: View {
         print("Ошибка кодирования данных: \(error.localizedDescription)")
       }
     }, label: {
-      Image(systemName: "square.and.arrow.down")
+      Image(systemName: "square.and.arrow.up")
         .symbolRenderingMode(.multicolor)
     })
   }

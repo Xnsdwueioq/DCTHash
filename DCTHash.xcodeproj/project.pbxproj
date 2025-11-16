@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B755C1E22ECA0DDA00421DA5 /* test_data.json in Resources */ = {isa = PBXBuildFile; fileRef = B755C1E12ECA0DDA00421DA5 /* test_data.json */; };
 		B7C815592EC21DED00B4CE8E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7C815582EC21DED00B4CE8E /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B755C1E12ECA0DDA00421DA5 /* test_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = test_data.json; sourceTree = "<group>"; };
 		B798DD3E2EC1372200866F9E /* DCTHash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DCTHash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7C815582EC21DED00B4CE8E /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -42,6 +44,7 @@
 		B782928A2EBF50DF00E7837D = {
 			isa = PBXGroup;
 			children = (
+				B755C1E12ECA0DDA00421DA5 /* test_data.json */,
 				B7C815582EC21DED00B4CE8E /* Launch Screen.storyboard */,
 				B798DD462EC1398900866F9E /* Icon */,
 				B78292952EBF50DF00E7837D /* DCTHash */,
@@ -115,6 +118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B7C815592EC21DED00B4CE8E /* Launch Screen.storyboard in Resources */,
+				B755C1E22ECA0DDA00421DA5 /* test_data.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,6 +272,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -303,6 +308,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

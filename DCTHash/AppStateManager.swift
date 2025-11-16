@@ -15,7 +15,7 @@ class AppStateManager {
     3: .system
   ]
   // App Info
-  let appVersion = "1.7"
+  let appVersion = "2.2.3"
   let appDate = "2025.11"
   
   // UserDefaults Keys

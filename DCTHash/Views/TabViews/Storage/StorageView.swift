@@ -9,6 +9,8 @@ import SwiftUI
 
 struct StorageView: View {
   @Environment(ProductStorage.self) var storage: ProductStorage
+  @State var showingImporter: Bool = false
+  @State var importSuccess: Bool?
   @State var showingExporter: Bool = false
   @State var exportSuccess: Bool?
   var storageName: String {
@@ -72,17 +74,45 @@ struct StorageView: View {
         ToolbarItem(placement: .automatic, content: {
           JSONSaverView(showingExporter: $showingExporter, exportSuccess: $exportSuccess)
         })
+        
+        // load
+        ToolbarItem(placement: .automatic, content: {
+            Button(action: {
+                self.showingImporter = true
+                self.importSuccess = nil
+            }, label: {
+                Image(systemName: "square.and.arrow.down")
+                    .symbolRenderingMode(.multicolor)
+            })
+        })
       })
     }
     .fullScreenCover(isPresented: $showingExporter) {
-      // DocumentExporter невидимый, он просто отображает системный диалог
       DocumentExporter(
-        data: (try? storage.getJSONData()) ?? Data(), // Получаем данные здесь, или пустые в случае ошибки
+        data: (try? storage.getJSONData()) ?? Data(),
         filename: "product_storage_\(Date().timeIntervalSince1970).json",
         isPresented: $showingExporter
       ) { completed in
         self.exportSuccess = completed
       }
+    }
+    .fullScreenCover(isPresented: $showingImporter) {
+        DocumentImporter(isPresented: $showingImporter) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    try storage.loadProductTable(from: data)
+                    self.importSuccess = true
+                    print("Данные успешно импортированы.")
+                } catch {
+                    print("Ошибка декодирования импортированных данных: \(error.localizedDescription)")
+                    self.importSuccess = false
+                }
+            case .failure(let error):
+                print("Ошибка при выборе файла: \(error.localizedDescription)")
+                self.importSuccess = false
+            }
+        }
     }
   }
 }

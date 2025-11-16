@@ -71,8 +71,9 @@ struct ScannerView: View {
           .frame(width: 120, height: 80)
         })
         .disabled(barcodes.isEmpty)
-        .buttonStyle(.glass)
         .padding(.bottom, 40)
+        .buttonStyle(.glass)
+
       }
       .navigationTitle("Сканирование")
     }

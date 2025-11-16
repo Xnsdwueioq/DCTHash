@@ -60,14 +60,14 @@ struct HelpView: View {
             .foregroundStyle(.gray)
         }
         VStack {
-          Image("searchexport")
+          Image("searchJSON")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 30))
           Text("Поиск и экспорт")
             .font(.callout)
             .foregroundStyle(.gray)
-          Text("11.\tНажмите чтобы выполнить поиск по всем товарам на складе\n12.\tНажмите чтобы выполнить экспорт данных в JSON файл")
+          Text("11.\tНажмите чтобы выполнить поиск по всем товарам на складе\n12.\tНажмите чтобы выполнить экспорт данных в JSON файл\n13.\tНажмите чтобы выполнить импорт данных из JSON файла")
             .font(.subheadline)
             .foregroundStyle(.gray)
         }
