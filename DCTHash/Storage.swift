@@ -93,8 +93,20 @@ class ProductStorage {
     "Бумажные изделия":[]
   ]
   
+  func removeProduct(_ product: Product) {
+      guard var items = productTable[product.category] else { return }
+      
+      if let index = items.firstIndex(where: { $0.id == product.id }) {
+          items.remove(at: index)
+          
+          productTable[product.category] = items
+          saveProductTable()
+      }
+  }
+  
   private var dataFileURL: URL {
     let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    print(urls)
     return urls[0].appendingPathComponent(productTableFilename)
   }
   

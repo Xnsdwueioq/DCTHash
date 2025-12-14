@@ -56,8 +56,11 @@ struct SearchView: View {
                   })
                 }
               }
-              .onDelete(perform: { offset in
-                storage.productTable[key]?.remove(atOffsets: offset)
+              .onDelete(perform: { indexSet in
+                for index in indexSet {
+                  let itemToDelete = filteredItems[index]
+                  storage.removeProduct(itemToDelete)
+                }
               })
             }, header: {
               Text(key)
