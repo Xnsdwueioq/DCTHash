@@ -31,6 +31,7 @@ struct Product: Identifiable, Hashable, Codable {
   }
   
   init?(barcode: String) {
+    var barcode = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
     let components = barcode.split(separator: "$")
     guard components.count == 2 else {
       return nil

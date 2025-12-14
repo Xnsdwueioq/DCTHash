@@ -42,7 +42,7 @@ struct ScannerView: View {
               ForEach(barcodes.reversed(), id:\.self) { barcode in
                 HStack(alignment:.center, spacing:10, content: {
                   Image(systemName: "barcode")
-                  Text(barcode)
+                  Text(barcode.trimmingCharacters(in: .whitespacesAndNewlines))
                 }).padding(.horizontal, 50)
               }
             }

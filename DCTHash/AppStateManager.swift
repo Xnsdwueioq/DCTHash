@@ -14,15 +14,13 @@ class AppStateManager {
     2: .dark,
     3: .system
   ]
-  // App Info
+
   let appVersion = "2.2.3"
   let appDate = "2025.11"
   
-  // UserDefaults Keys
   private let hasLaunchedBeforeKey = "hasLaunchedBeforeKey"
   private let colorThemeKey = "colorThemeKey"
   
-  // App State Variables
   var hasLaunchedBefore: Bool
   var colorTheme: AppTheme
   
@@ -32,7 +30,6 @@ class AppStateManager {
     colorTheme = intColorThemes[intColorTheme] ?? .system
   }
   
-  // To close Welcome View and change state variable
   func closeWelcomeView() {
     hasLaunchedBefore = true
     UserDefaults.standard.set(true, forKey: hasLaunchedBeforeKey)
