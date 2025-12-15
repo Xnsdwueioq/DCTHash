@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// кнопки переименования и очистки склада
 struct StorageRenameView: View {
   @Environment(ProductStorage.self) var storage: ProductStorage
   @State var isRenameVisible: Bool = false
@@ -14,9 +15,11 @@ struct StorageRenameView: View {
   @State var newName: String = ""
   
   var body: some View {
+    // кнопка переименования склада
     Button("Переименовать склад") {
       isRenameVisible.toggle()
     }
+    // всплывающее окно
     .alert("Новое название", isPresented: $isRenameVisible, actions: {
       TextField("Название", text: $newName)
       Button("ОК") {
@@ -33,9 +36,11 @@ struct StorageRenameView: View {
       Text("Введите новое название для склада")
     })
     
+    // кнопка очистка склада
     Button("Очистить все данные") {
       isDeleteAllVisible.toggle()
     }
+    // всплывающее окно
     .alert("Очистить все данные", isPresented: $isDeleteAllVisible, actions: {
       Button("Удалить", role: .destructive) {
         storage.deleteAllProducts()

@@ -7,11 +7,13 @@
 
 import SwiftUI
 
+// перечисление для темы оформления
 enum AppTheme: String, CaseIterable {
   case light = "Светлая"
   case dark = "Темная"
   case system = "Системная"
   
+  // вычисляемое свойство
   var colorScheme: ColorScheme? {
     switch self {
     case .light:
@@ -23,6 +25,7 @@ enum AppTheme: String, CaseIterable {
     }
   }
   
+  // цифровой вид
   var intColorScheme: Int {
     switch self {
     case .light:

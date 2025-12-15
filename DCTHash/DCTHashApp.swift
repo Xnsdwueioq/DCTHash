@@ -15,17 +15,20 @@ struct DCTHashApp: App {
 
   var body: some Scene {
     WindowGroup {
+      // стэк по Z-координате
       ZStack {
+        // если приложение уже запускалось - ContentView
         if appStateManager.hasLaunchedBefore {
           ContentView()
             .environment(appStateManager)
             .environment(storage)
             .preferredColorScheme(appStateManager.colorTheme.colorScheme)
-        } else {
+        } else { // если первый запуск - WelcomeView
           WelcomeView()
             .environment(appStateManager)
         }
         
+        // анимация экрана запуска
         if launchedScreenState.isActive {
           AnimatedLaunchView()
             .transition(.opacity)

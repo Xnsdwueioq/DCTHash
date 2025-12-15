@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// представления содержащее контактную информацию
 struct SendFeedbackView: View {
   let displayPhoneNumber = "+7 (950) 402 76-70"
   let callURL = URL(string: "tel://+79504027670")!

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// представление справки, содержащее вспомогательные изображения
 struct HelpView: View {
   var body: some View {
     ScrollView {

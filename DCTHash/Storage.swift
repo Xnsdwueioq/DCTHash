@@ -9,12 +9,14 @@ import SwiftUI
 import UIKit
 import UniformTypeIdentifiers
 
+// основная структура - товар
 struct Product: Identifiable, Hashable, Codable {
   var id: UUID = UUID()
   let name: String
   var amount: Int
   let category: String
   
+  // для штрих-кода, соответствие код-категория
   private static let categoryMap: [String: String] = [
     "1": "Техника",
     "2": "Мебель",
@@ -24,13 +26,16 @@ struct Product: Identifiable, Hashable, Codable {
     "6": "Бумажные изделия"
   ]
   
+  // ключи для персистентности
   enum CodingKeys: String, CodingKey {
     case name
     case amount
     case category
   }
   
+  // конструктор параметрический (принимает штрихкод)
   init?(barcode: String) {
+    // разделяет строку на субстроки по $
     var barcode = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
     let components = barcode.split(separator: "$")
     guard components.count == 2 else {
@@ -40,6 +45,7 @@ struct Product: Identifiable, Hashable, Codable {
     let parsedName = String(components[0])
     let dataPart = components[1]
     
+    // отбрасывает последний символ, определяет категорию по нему
     guard let categoryCode = dataPart.last.map({String($0)}),
           let parsedCategory = Product.categoryMap[categoryCode] else {
       return nil
@@ -56,12 +62,14 @@ struct Product: Identifiable, Hashable, Codable {
     self.category = parsedCategory
   }
   
+  // конструктор параметрический
   init(name: String, amount: Int, category: String) {
     self.name = name
     self.amount = amount
     self.category = category
   }
 
+  // конструктор для декодирования из Data
   init(from decoder: any Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     self.name = try container.decode(String.self, forKey: .name)
@@ -70,6 +78,7 @@ struct Product: Identifiable, Hashable, Codable {
     self.id = UUID()
   }
   
+  // функция для кодирования в Data
   func encode(to encoder: any Encoder) throws {
     var container = encoder.container(keyedBy: CodingKeys.self)
     try container.encode(self.name, forKey: .name)
@@ -79,6 +88,7 @@ struct Product: Identifiable, Hashable, Codable {
   
 }
 
+// класс для храния
 @Observable
 class ProductStorage {
   private let storageNameKey = "storageNameKey"
@@ -94,6 +104,7 @@ class ProductStorage {
     "Бумажные изделия":[]
   ]
   
+  // удаляет товар
   func removeProduct(_ product: Product) {
       guard var items = productTable[product.category] else { return }
       
@@ -105,20 +116,25 @@ class ProductStorage {
       }
   }
   
+  // вычисляемое свойство с url ссылкой на файл
   private var dataFileURL: URL {
     let urls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     print(urls)
     return urls[0].appendingPathComponent(productTableFilename)
   }
   
+  // конструктор параметрический принимающий список штрихкодов
   init(barcodes: [String]) {
     addProducts(productsBarcodes: barcodes)
   }
+  
+  // конструктор по умолчанию
   init() {
     storageName = UserDefaults.standard.string(forKey: storageNameKey) ?? "Склад"
     loadProductTable()
   }
   
+  // загружает таблицу из файла
   private func loadProductTable() {
     guard let data = try? Data(contentsOf: dataFileURL) else {
       return
@@ -133,6 +149,8 @@ class ProductStorage {
       print("Ошибка декодирования данных: \(error.localizedDescription)")
     }
   }
+  
+  // перегрузка
   func loadProductTable(from data: Data) throws {
       do {
           let loadedTable = try JSONDecoder().decode([String : [Product]].self, from: data)
@@ -149,6 +167,8 @@ class ProductStorage {
           throw error
       }
   }
+  
+  // сохранение таблицы в файл
   private func saveProductTable() {
     do {
       let encodedData = try JSONEncoder().encode(productTable)
@@ -157,11 +177,14 @@ class ProductStorage {
       print("Ошибка сохранения данных: \(error.localizedDescription)")
     }
   }
-  
+
+  // функция смены имени склада
   func changeStorageName(_ newName: String) {
     storageName = newName
     UserDefaults.standard.set(newName, forKey: storageNameKey)
   }
+  
+  // функция для Stepper, реактивно меняет размер
   func stepperSet(category: String, productName: String, newAmount: Int) {
     if var products = productTable[category] {
       if let index = products.firstIndex(where: {$0.name == productName}) {
@@ -172,6 +195,7 @@ class ProductStorage {
     }
   }
   
+  // добавление товаров, принимает список штрихкодов
   func addProducts(productsBarcodes: [String]) {
     for barcode in productsBarcodes {
       guard let newProduct = Product(barcode: barcode) else {
@@ -195,6 +219,8 @@ class ProductStorage {
     }
     saveProductTable()
   }
+  
+  // удаляет товары, принимает список штрихкодов
   func deleteProducts(productsBarcodes: [String]) {
     for barcode in productsBarcodes {
       guard let deleteProduct = Product(barcode: barcode) else {
@@ -221,6 +247,8 @@ class ProductStorage {
     }
     saveProductTable()
   }
+  
+  // удаляет все товары на складе
   func deleteAllProducts() {
     for key in productTable.keys {
       productTable[key] = []
@@ -228,6 +256,7 @@ class ProductStorage {
     saveProductTable()
   }
   
+  // возвращает сырой поток байтов
   func getJSONData() throws -> Data {
     let encoder = JSONEncoder()
     encoder.outputFormatting = .prettyPrinted
@@ -235,20 +264,22 @@ class ProductStorage {
   }
 }
 
+// тип файла в нотации UTType
 let jsonUTType = UTType(filenameExtension: "json", conformingTo: .data)!
 
+// структура для экспорта в JSON
 struct DocumentExporter: UIViewControllerRepresentable {
-  // Данные, которые мы хотим сохранить (в формате Data)
+  // данные, которые мы хотим сохранить (в формате Data)
   let data: Data
   let filename: String
   
   @Binding var isPresented: Bool
-  var completion: (Bool) -> Void // Callback для обработки результата
+  var completion: (Bool) -> Void // callback для обработки результата
   
   func makeUIViewController(context: Context) -> UIViewController {
     let controller = UIViewController()
     
-    // Запускаем экспорт, как только View появляется
+    // запускаем экспорт, как только View появляется
     DispatchQueue.main.async {
       self.exportDocument(from: controller, context: context)
     }
@@ -262,30 +293,31 @@ struct DocumentExporter: UIViewControllerRepresentable {
   }
   
   private func exportDocument(from parent: UIViewController, context: Context) {
-    // Сохраняем данные во временный файл
+    // сохраняем данные во временный файл
     guard let tempURL = writeToTemporaryFile() else {
       completion(false)
       return
     }
     
-    // Создаем контроллер для экспорта
-    // Используем UIActivityViewController, который предлагает "Сохранить в Файлы"
+    // создаем контроллер для экспорта
+    // используем UIActivityViewController, который предлагает "Сохранить в Файлы"
     let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
     
-    // Устанавливаем делегат для обработки закрытия
+    // устанавливаем делегат для обработки закрытия
     activityVC.completionWithItemsHandler = { activityType, completed, returnedItems, error in
-      // Удаляем временный файл
+      // удаляем временный файл
       try? FileManager.default.removeItem(at: tempURL)
       
-      // Сообщаем родительскому представлению, что диалог закрыт
+      // сообщаем родительскому представлению, что диалог закрыт
       self.isPresented = false
       self.completion(completed)
     }
     
-    // Представляем контроллер
+    // представляем контроллер
     parent.present(activityVC, animated: true, completion: nil)
   }
   
+  // функция записи в файл
   private func writeToTemporaryFile() -> URL? {
     do {
       let tempDir = FileManager.default.temporaryDirectory
@@ -306,6 +338,8 @@ struct DocumentExporter: UIViewControllerRepresentable {
     }
   }
 }
+
+// структура для импорта JSON
 struct DocumentImporter: UIViewControllerRepresentable {
     static let readableContentTypes: [UTType] = [jsonUTType]
 

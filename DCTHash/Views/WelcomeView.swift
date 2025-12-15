@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// представление приветственного окна
 struct WelcomeView: View {
   @Environment(AppStateManager.self) var appStateManager: AppStateManager
   

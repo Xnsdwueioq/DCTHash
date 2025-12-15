@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// основная структура представляющая выбор вкладок
 struct ContentView: View {
   @Environment(AppStateManager.self) var appStateManager: AppStateManager
   @State var selectedView: TabViews = .storage

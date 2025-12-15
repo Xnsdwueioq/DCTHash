@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// представление для поиска
 struct SearchView: View {
   @Environment(ProductStorage.self) var storage: ProductStorage
   @State var textfieldName: String = ""
@@ -16,6 +17,7 @@ struct SearchView: View {
   var body: some View {
     List {
       HStack(spacing: 10) {
+        // поле для ввода
         TextField("Введите имя товара", text: $textfieldName)
           .focused($isFocused)
           .onChange(of: textfieldName, {
@@ -26,6 +28,8 @@ struct SearchView: View {
             isFocused = false
           }
           .submitLabel(.search)
+        
+        // кнопка
         Button(action: {
           searchedName = textfieldName
           isFocused = false
@@ -35,6 +39,7 @@ struct SearchView: View {
         .buttonStyle(.borderedProminent)
       }
       
+      // отображение найденных товаров
       if searchedName != "" {
         ForEach(Array(storage.productTable), id:\.key) { key, items in
           let filteredItems = items.filter({

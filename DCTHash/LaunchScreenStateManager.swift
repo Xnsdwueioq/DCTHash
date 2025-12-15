@@ -11,6 +11,7 @@ import SwiftUI
 final class LaunchScreenStateManager {
   private(set) var isActive: Bool = true
   
+  // функция скрытия окна запуска
   func dismiss() {
     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
       withAnimation(.easeInOut(duration: 1)) {

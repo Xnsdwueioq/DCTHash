@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// вкладка "настройки"
 struct SettingsView: View {
   @Environment(AppStateManager.self) var appStateManager: AppStateManager
   @State var selectedAppTheme: AppTheme = .system
@@ -15,7 +16,7 @@ struct SettingsView: View {
   var body: some View {
     NavigationStack {
       List {
-        // Тема
+        // тема
         Section(content: {
           Picker(selection: $selectedAppTheme, content: {
             ForEach(AppTheme.allCases, id: \.self) { theme in
@@ -33,12 +34,12 @@ struct SettingsView: View {
           selectedAppTheme = appStateManager.colorTheme
         }
         
-        // Переименовать и очистить
+        // переименовать и очистить
         Section(content: {
           StorageRenameView()
         })
         
-        // Справка и отзыв
+        // справка и отзыв
         Section(content: {
           NavigationLink(destination: {
             HelpView()
